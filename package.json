@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "ZeroMQ's Z85 encoding extended to arbitrary length as done by CometD",
   "main": "z85.js",
+  "scripts": {
+    "test": "node test.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lapo-luchini/z85js.git"

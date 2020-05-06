@@ -29,7 +29,9 @@ const exceptions = [
     ['12Ø', "Character 'Ø' in position 3 is not valid Z85", 'invalid Unicode'],
 ];
 
+let errors = 0;
 function state(correct) {
+    if (!correct) ++errors;
     return correct ? '\x1B[1m\x1B[32mOK\x1B[39m\x1B[22m ' : '\x1B[1m\x1B[31mKO\x1B[39m\x1B[22m ';
 }
 
@@ -68,3 +70,5 @@ exceptions.forEach(t => {
     if (result != expected)
         console.log(result);
 });
+
+process.exit(errors);
