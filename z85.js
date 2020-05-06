@@ -45,27 +45,27 @@
     ];
     var Z85 = {
         encode: function(bytes) {
-            var buffer = null;
-            if (bytes instanceof ArrayBuffer) {
+            var buffer;
+            if (bytes instanceof Uint8Array) {
                 buffer = bytes;
+            } else if (bytes instanceof ArrayBuffer) {
+                buffer = new Uint8Array(bytes);
             } else if (bytes.buffer instanceof ArrayBuffer) {
-                buffer = bytes.buffer;
+                buffer = new Uint8Array(bytes.buffer);
             } else if (Array.isArray(bytes)) {
-                buffer = new Uint8Array(bytes).buffer;
-            }
-            if (buffer == null) {
+                buffer = new Uint8Array(bytes);
+            } else {
                 throw 'Cannot Z85 encode ' + bytes;
             }
 
             var length = buffer.byteLength;
             var remainder = length % 4;
             var padding = 4 - (remainder === 0 ? 4 : remainder);
-            var view = new DataView(buffer);
             var result = '';
             var value = 0;
             for (var i = 0; i < length + padding; ++i) {
                 var isPadding = i >= length;
-                value = value * 256 + (isPadding ? 0 : view.getUint8(i));
+                value = value * 256 + (isPadding ? 0 : buffer[i]);
                 if ((i + 1) % 4 === 0) {
                     var divisor = 85 * 85 * 85 * 85;
                     for (var j = 5; j > 0; --j) {
@@ -89,8 +89,7 @@
             }
             var length = string.length;
 
-            var buffer = new ArrayBuffer((length * 4 / 5) - padding);
-            var view = new DataView(buffer);
+            var buffer = new Uint8Array((length * 4 / 5) - padding);
             var value = 0;
             var charIdx = 0;
             var byteIdx = 0;
@@ -100,8 +99,8 @@
                 if (charIdx % 5 === 0) {
                     var divisor = 256 * 256 * 256;
                     while (divisor >= 1) {
-                        if (byteIdx < view.byteLength) {
-                            view.setUint8(byteIdx++, Math.floor(value / divisor) % 256);
+                        if (byteIdx < buffer.byteLength) {
+                            buffer[byteIdx++] = Math.floor(value / divisor) % 256;
                         }
                         divisor /= 256;
                     }
@@ -109,7 +108,7 @@
                 }
             }
 
-            return buffer;
+            return buffer.buffer;
         }
     };
 
