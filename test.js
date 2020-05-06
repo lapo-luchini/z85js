@@ -24,6 +24,11 @@ const tests = [
     ['0102030405060708', 'hex', '0rJua1Qkhq', 'my8'],
 ];
 
+const exceptions = [
+    ['a_b', "Character '_' in position 2 is not valid Z85", 'invalid ASCII'],
+    ['12Ø', "Character 'Ø' in position 3 is not valid Z85", 'invalid Unicode'],
+];
+
 function state(correct) {
     return correct ? '\x1B[1m\x1B[32mOK\x1B[39m\x1B[22m ' : '\x1B[1m\x1B[31mKO\x1B[39m\x1B[22m ';
 }
@@ -45,6 +50,21 @@ tests.forEach(t => {
         console.log(e.stack);
     }
     console.log(state(result == expected) + state(input.equals(back)) + comment);
+    if (result != expected)
+        console.log(result);
+});
+
+exceptions.forEach(t => {
+    let input = t[0],
+        expected = t[1],
+        comment = t[2],
+        result = false;
+    try {
+        Z85.decode(input);
+    } catch (e) {
+        result = e.message;
+    }
+    console.log(state(result == expected) + '   ' + comment);
     if (result != expected)
         console.log(result);
 });
