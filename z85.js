@@ -95,7 +95,7 @@
             var byteIdx = 0;
             for (var i = 0; i < length; ++i) {
                 var code = _z85DecodeTable[string.charCodeAt(charIdx++) - 32];
-                if (code < 0)
+                if (!(code >= 0)) // also manages undefined values
                     throw new Error("Character '" + string.charAt(i) + "' in position " + charIdx + " is not valid Z85");
                 value = value * 85 + code;
                 if (charIdx % 5 === 0) {
