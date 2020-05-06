@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008-2016 CometD authors.
+ * Copyright (c) 2020      Lapo Luchini <lapo@lapo.it>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+(function () {
+    'use strict';
 
     var _z85EncodeTable = [
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -108,3 +112,7 @@
             return buffer;
         }
     };
+
+    // export globals
+    if (typeof module !== 'undefined') { module.exports = Z85; } else { window.Z85 = Z85; }
+})();
